@@ -1,3 +1,5 @@
+from square import Square
+
 class Group(list):
     min, max = 1, 9
     
@@ -32,3 +34,11 @@ class Group(list):
         
 
 print Group()
+
+class Row(Group): pass
+class Col(Group): pass
+class Box(Group): pass
+
+print  Row()
+print  Col()
+print  Box()
