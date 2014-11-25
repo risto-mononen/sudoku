@@ -1,8 +1,8 @@
-class square(set):
+class Square(set):
     min, max = 1, 9
     
     def __init__(self, values=range(min, max+1)):
-        super(square, self).update(values)
+        super(Square, self).update(values)
         status, msg = self.invariant()
         assert status, msg
 
@@ -30,4 +30,4 @@ class square(set):
         return None
 
 
-print square()
+print Square()
