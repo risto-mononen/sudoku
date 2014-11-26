@@ -20,5 +20,8 @@ class Square(set):
             return list(self)[0]
         return None
 
+    def eliminate(self, value):
+        if value in self:
+            self.remove(value)
 
 print Square()
