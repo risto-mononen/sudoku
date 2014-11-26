@@ -7,24 +7,17 @@ class Group(list):
         s = super(Group, self)
         for i in range(self.min, self.max+1):
             s.append(Square())
-        status, msg = self.invariant()
-        assert status, msg
-
-    def invariant(self):
-        a, b = self.min, self.max
+        self.assert_invariant()
+        
+    def assert_invariant(self):
         n = len(self)
-        if n < a or n > b:
-            return False, 'invalid Group size: %d, %s' % (n, self)
-        s = self
-        for i in range(n):
-            sq = s[i]
-            v = sq.value()
-            if not v:
-                continue
-            for other in s[i+1:]:
-                if v in other:
-                    return False, 'duplicate value of Square[%d]: %d in %d' % (i, v, other)
-        return True, None
+        assert self.min <= n <= self.max, 'invalid Group size: %d, %s' % (n, self)
+        i = 0
+        for square in self:
+            i += 1
+            value = square.value()
+            for other in self[i:]:
+                assert value not in other, 'duplicate value: %s, %s' % (square, other)
 
     def isdone(self):
         return all(self.value())
