@@ -24,6 +24,14 @@ class Group(list):
 
     def value(self):
         return [sq.value() for sq in self]
+
+    def eliminate(self, value):
+        for square in self:
+            square.eliminate(value)
+
+    def add(self, value):
+        for square in self:
+            square.add(value)
         
 
 print Group()
