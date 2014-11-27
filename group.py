@@ -35,11 +35,3 @@ class Group(list):
         
 
 print Group()
-
-class Row(Group): pass
-class Col(Group): pass
-class Box(Group): pass
-
-print  Row()
-print  Col()
-print  Box()
