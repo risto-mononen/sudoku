@@ -1,9 +1,12 @@
 class Square(set):
     min, max = 1, 9
+    id = 0
 
     def __init__(self, values=range(min, max+1)):
         super(Square, self).update(values)
-        self.assert_invariant()
+        Square.id += 1
+        self.id = Square.id
+        #self.assert_invariant()
 
     def assert_invariant(self):
         n = len(self)
@@ -24,4 +27,8 @@ class Square(set):
         if value in self:
             self.remove(value)
 
-print Square()
+    def __str__(self):
+        return str(self.id)
+
+    def __repr__(self):
+        return str(self.id)
