@@ -1,37 +1,51 @@
 from square import Square
 
+
 class Group(list):
     min, max = 1, 9
-    
+
+
     def __init__(self):
         s = super(Group, self)
         for i in range(self.min, self.max+1):
             s.append(Square())
-        self.assert_invariant()
-        
-    def assert_invariant(self):
-        n = len(self)
-        assert self.min <= n <= self.max, 'invalid Group size: %d, %s' % (n, self)
-        i = 0
-        for square in self:
-            i += 1
-            value = square.value()
-            for other in self[i:]:
-                assert value not in other, 'duplicate value: %s, %s' % (square, other)
+
 
     def isdone(self):
         return all(self.value())
 
+
     def value(self):
         return [sq.value() for sq in self]
 
+
     def eliminate(self, value):
+        """Remove value from all squares.
+
+        >>> r=Group()
+        >>> r.eliminate(1)
+        [Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9])]
+        """
+
         for square in self:
             square.eliminate(value)
+        return self
 
-    def add(self, value):
+
+    def fix(self, index, value):
+        """Fix value at index, remove it from other squares.
+
+        >>> r=Group()
+        >>> r.fix(4, 5)
+        [Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([5]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9])]
+        """
+
         for square in self:
-            square.add(value)
-        
+            square.eliminate(value)
+        self[index].fix(value)
+        return self
 
-print Group()
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
