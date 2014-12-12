@@ -1,18 +1,8 @@
 class Square(set):
     min, max = 1, 9
-    id = 0
 
     def __init__(self, values=range(min, max+1)):
         super(Square, self).update(values)
-        Square.id += 1
-        self.id = Square.id
-        #self.assert_invariant()
-
-    def assert_invariant(self):
-        n = len(self)
-        assert self.min <= n <= self.max, 'invalid candidate set size: %d, %s' % (n, self)
-        for x in self:
-            assert self.min <= x <= self.max, '%d out of range [%d, %d]' % (x, a, b)
 
     def isdone(self):
         return self.value() != None
@@ -27,8 +17,19 @@ class Square(set):
         if value in self:
             self.remove(value)
 
-    def __str__(self):
-        return str(self.id)
+    def fix(self, value):
+        """Single value found, remove others from set.
 
-    def __repr__(self):
-        return str(self.id)
+        >>> s=Square()
+        >>> s.fix(5)
+        Square([5])
+        """
+
+        self.clear()
+        self.add(value)
+        return self
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+
