@@ -42,3 +42,10 @@ class Grid(list):
     #     for row in self:
     #         row.add(value)
         
+
+def main():
+    g = Grid()
+    print g
+
+if __name__ == "__main__":
+    main()
