@@ -1,3 +1,6 @@
+import random
+
+
 class Square(set):
     min, max = 1, 9
 
@@ -8,26 +11,29 @@ class Square(set):
         return self.value() != None
 
     def value(self):
-        self.assert_invariant()
         if len(self) == 1:
             return list(self)[0]
-        return None
+
 
     def eliminate(self, value):
         if value in self:
             self.remove(value)
 
-    def fix(self, value):
-        """Single value found, remove others from set.
+    def fix(self, value=None):
+        """Fix to single value, remove others from set.
+        Choose a random value if not given.
 
         >>> s=Square()
         >>> s.fix(5)
+        >>> s
         Square([5])
         """
 
+        if value == None:
+            value = random.choice(list(self))
         self.clear()
         self.add(value)
-        return self
+
 
 if __name__ == "__main__":
     import doctest
