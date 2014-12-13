@@ -32,7 +32,7 @@ class Group(list):
         return self
 
 
-    def fix(self, index, value):
+    def fix(self, index, value=None):
         """Fix value at index, remove it from other squares.
 
         >>> r=Group()
@@ -40,6 +40,8 @@ class Group(list):
         [Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([5]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9])]
         """
 
+        if not value:
+            value = random.choice(list(self[index]))
         for square in self:
             square.eliminate(value)
         self[index].fix(value)
