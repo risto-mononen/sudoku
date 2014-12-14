@@ -51,6 +51,9 @@ class Group(list):
         return self
 
 
+    def __str__(self):
+        return ' '.join([str(sq) for sq in self])
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod()

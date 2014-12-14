@@ -1,3 +1,4 @@
+import random
 from square import Square
 from group import Group
 
@@ -66,7 +67,7 @@ class Sudoku(list):
 
 
     def i2box(self, index):
-        """Return box number and position in the box of the square at index.
+        """Return box number for the square at index.
         >>> s=Sudoku(2,2)
         >>> for i in range(len(s)):
         ... 	print i, s.i2box(i)
@@ -104,6 +105,7 @@ class Sudoku(list):
         the index.
         >>> s=Sudoku(2,2)
         >>> s.eliminate(0,1)
+        >>> s
         [Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])]
         >>> s.col
         [[Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4])], [Square([2, 3, 4]), Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])]]
@@ -117,16 +119,18 @@ class Sudoku(list):
         self.col[x].eliminate(value)
         self.row[y].eliminate(value)
         self.box[b].eliminate(value)
-        return self
 
 
     def fix(self, index=None, value=None):
         """Fix value at index, remove it from other squares on the
         row, column and the box.
         Random index and/or value if not given.
+        Return (index, value) tuple.
         Note: no changes if (random) index points to a solved square.
         >>> s=Sudoku(2,2)
         >>> s.fix(1,2)
+        ((1, 0), 2)
+        >>> s
         [Square([1, 3, 4]), Square([2]), Square([1, 3, 4]), Square([1, 3, 4]), Square([1, 3, 4]), Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])]
         >>> s.col
         [[Square([1, 3, 4]), Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([2]), Square([1, 3, 4]), Square([1, 3, 4]), Square([1, 3, 4])], [Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])]]
@@ -138,11 +142,15 @@ class Sudoku(list):
         if index == None:
             index = random.randrange(len(self))
         if value == None:
-            value = random.choice(self[index])
+            value = random.choice(list(self[index]))
         self.eliminate(index, value)
         self[index].fix(value)
-        return self
+        return self.i2xy(index), value
 
+
+    def __str__(self):
+        return '\n'.join([str(r) for r in self.row])
+        return ' '.join([str(sq) for sq in self])
 
 
 if __name__ == "__main__":
