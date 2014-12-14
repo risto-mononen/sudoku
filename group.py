@@ -3,13 +3,16 @@ import random
 
 
 class Group(list):
-    min, max = 1, 9
 
 
-    def __init__(self):
-        s = super(Group, self)
-        for i in range(self.min, self.max+1):
-            s.append(Square())
+    def __init__(self, n=9):
+        """Initilize to group of n squares, default zero.
+        >>> Group()
+        [Square([1, 2, 3, 4, 5, 6, 7, 8, 9]), Square([1, 2, 3, 4, 5, 6, 7, 8, 9]), Square([1, 2, 3, 4, 5, 6, 7, 8, 9]), Square([1, 2, 3, 4, 5, 6, 7, 8, 9]), Square([1, 2, 3, 4, 5, 6, 7, 8, 9]), Square([1, 2, 3, 4, 5, 6, 7, 8, 9]), Square([1, 2, 3, 4, 5, 6, 7, 8, 9]), Square([1, 2, 3, 4, 5, 6, 7, 8, 9]), Square([1, 2, 3, 4, 5, 6, 7, 8, 9])]
+        >>> Group(6)
+        [Square([1, 2, 3, 4, 5, 6]), Square([1, 2, 3, 4, 5, 6]), Square([1, 2, 3, 4, 5, 6]), Square([1, 2, 3, 4, 5, 6]), Square([1, 2, 3, 4, 5, 6]), Square([1, 2, 3, 4, 5, 6])]
+        """
+        s = super(Group, self).__init__([Square(n) for i in range(n)])
 
 
     def isdone(self):
@@ -22,12 +25,10 @@ class Group(list):
 
     def eliminate(self, value):
         """Remove value from all squares.
-
-        >>> r=Group()
+        >>> r=Group(9)
         >>> r.eliminate(1)
         [Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9]), Square([2, 3, 4, 5, 6, 7, 8, 9])]
         """
-
         for square in self:
             square.eliminate(value)
         return self
