@@ -1,4 +1,5 @@
 from square import Square
+import random
 
 
 class Group(list):
