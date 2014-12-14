@@ -23,23 +23,24 @@ class Sudoku(list):
         >>> s.row
         [[Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([1, 2, 3, 4]), Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])]]
         >>> s.box
-        {(1, 0, 1, 1): Square([1, 2, 3, 4]), (1, 1, 0, 1): Square([1, 2, 3, 4]), (1, 0, 0, 0): Square([1, 2, 3, 4]), (0, 1, 1, 0): Square([2, 3, 4]), (1, 0, 1, 0): Square([1, 2, 3, 4]), (0, 0, 0, 1): Square([1, 2, 3, 4]), (0, 1, 0, 1): Square([1, 2, 3, 4]), (1, 0, 0, 1): Square([1, 2, 3, 4]), (0, 0, 1, 0): Square([1, 2, 3, 4]), (1, 1, 1, 1): Square([1, 2, 3, 4]), (0, 0, 0, 0): Square([1, 2, 3, 4]), (0, 1, 0, 0): Square([1, 2, 3, 4]), (0, 0, 1, 1): Square([1, 2, 3, 4]), (1, 1, 1, 0): Square([1, 2, 3, 4]), (0, 1, 1, 1): Square([1, 2, 3, 4]), (1, 1, 0, 0): Square([1, 2, 3, 4])}
+        [[Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([1, 2, 3, 4]), Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])]]
         """
         s = self
         s.box_height, s.box_width = box_height, box_width
         h,w = box_height, box_width
         s.n = n = box_height * box_width
-        s.col,s.row,s.box = list(),list(),dict() # TODO: box into a list
+        s.col,s.row,s.box = list(),list(),list()
         for i in range(n):
             s.col.append(Group(0))
             s.row.append(Group(0))
+            s.box.append(Group(0))
         for y in range(n):
             for x in range(n):
                 sq = Square(n)
                 s.append(sq)
                 s.col[x].append(sq)
                 s.row[y].append(sq)
-                s.box[self.xy2box(x,y)] = sq # TODO: box like row
+                s.box[self.xy2box(x,y)].append(sq)
 
 
     def i2xy(self, index):
@@ -66,22 +67,26 @@ class Sudoku(list):
 
     def i2box(self, index):
         """Return box number and position in the box of the square at index.
-        >>> s=Sudoku()
-        >>> for i in range(0,81,7):
+        >>> s=Sudoku(2,2)
+        >>> for i in range(len(s)):
         ... 	print i, s.i2box(i)
         ...
-        0 (0, 0, 0, 0)
-        7 (2, 0, 1, 0)
-        14 (1, 0, 2, 1)
-        21 (1, 0, 0, 2)
-        28 (0, 1, 1, 0)
-        35 (2, 1, 2, 0)
-        42 (2, 1, 0, 1)
-        49 (1, 1, 1, 2)
-        56 (0, 2, 2, 0)
-        63 (0, 2, 0, 1)
-        70 (2, 2, 1, 1)
-        77 (1, 2, 2, 2)
+        0 0
+        1 0
+        2 1
+        3 1
+        4 0
+        5 0
+        6 1
+        7 1
+        8 2
+        9 2
+        10 3
+        11 3
+        12 2
+        13 2
+        14 3
+        15 3
         """
         x,y = self.i2xy(index)  # Normal coordinates
         return self.xy2box(x,y)
@@ -91,12 +96,28 @@ class Sudoku(list):
         h,w = self.box_height, self.box_width
         bx,by = x/h,y/w         # Outer box
         ix,iy = x%h,y%w         # Inner box
-        return bx,by,ix,iy      # TODO: Map tuple to a unique int
+        return bx+by*h
 
 
-    # def eliminate(self, value):
-    #     for row in self:
-    #         row.eliminate(value)
+    def eliminate(self, index, value):
+        """Remove value all squares on the row, column and the box defined by
+        the index.
+        >>> s=Sudoku(2,2)
+        >>> s.eliminate(0,1)
+        [Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])]
+        >>> s.col
+        [[Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4])], [Square([2, 3, 4]), Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])]]
+        >>> s.row
+        [[Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4])], [Square([2, 3, 4]), Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])]]
+        >>> s.box
+        [[Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4]), Square([2, 3, 4])], [Square([2, 3, 4]), Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([2, 3, 4]), Square([1, 2, 3, 4]), Square([2, 3, 4]), Square([1, 2, 3, 4])], [Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])]]
+        """
+        x,y = self.i2xy(index)
+        b = self.xy2box(x,y)
+        self.col[x].eliminate(value)
+        self.row[y].eliminate(value)
+        self.box[b].eliminate(value)
+        return self
 
 
     def fix(self, index=None, value=None):
@@ -105,19 +126,20 @@ class Sudoku(list):
         Random index and/or value if not given.
         Note: no changes if (random) index points to a solved square.
         >>> s=Sudoku(2,2)
-        >>> s.fix(10,2)
-        [Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([5]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9]), Square([1, 2, 3, 4, 6, 7, 8, 9])]
+        >>> s.fix(1,2)
+        [Square([1, 3, 4]), Square([2]), Square([1, 3, 4]), Square([1, 3, 4]), Square([1, 3, 4]), Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])]
+        >>> s.col
+        [[Square([1, 3, 4]), Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([2]), Square([1, 3, 4]), Square([1, 3, 4]), Square([1, 3, 4])], [Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])]]
+        >>> s.row
+        [[Square([1, 3, 4]), Square([2]), Square([1, 3, 4]), Square([1, 3, 4])], [Square([1, 3, 4]), Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([1, 2, 3, 4]), Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([1, 2, 3, 4]), Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])]]
+        >>> s.box
+        [[Square([1, 3, 4]), Square([2]), Square([1, 3, 4]), Square([1, 3, 4])], [Square([1, 3, 4]), Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])], [Square([1, 2, 3, 4]), Square([1, 3, 4]), Square([1, 2, 3, 4]), Square([1, 3, 4])], [Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4]), Square([1, 2, 3, 4])]]
         """
         if index == None:
             index = random.randrange(len(self))
         if value == None:
             value = random.choice(self[index])
-        x,y = self.i2xy(index)
-        b = self.i2box(index)
-        self.col[x].eliminate(value=value)
-        self.row[y].eliminate(value=value)
-        self.box[b].eliminate(value=value)
-        return self
+        self.eliminate(index, value)
         self[index].fix(value)
         return self
 
