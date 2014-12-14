@@ -2,10 +2,17 @@ import random
 
 
 class Square(set):
-    min, max = 1, 9
 
-    def __init__(self, values=range(min, max+1)):
-        super(Square, self).update(values)
+
+    def __init__(self, n=9):
+        """Create square with all valid candidate values.
+        >>> Square()
+        Square([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        >>> Square(6)
+        Square([1, 2, 3, 4, 5, 6])
+        """
+        super(Square, self).__init__(range(1,n+1))
+
 
     def isdone(self):
         return self.value() != None
