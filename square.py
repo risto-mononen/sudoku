@@ -7,9 +7,9 @@ class Square(set):
     def __init__(self, n=9):
         """Create square with all valid candidate values.
         >>> Square()
-        Square([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        Square({1, 2, 3, 4, 5, 6, 7, 8, 9})
         >>> Square(6)
-        Square([1, 2, 3, 4, 5, 6])
+        Square({1, 2, 3, 4, 5, 6})
         """
         super(Square, self).__init__(range(1,n+1))
 
@@ -32,7 +32,7 @@ class Square(set):
         >>> s=Square()
         >>> s.fix(5)
         >>> s
-        Square([5])
+        Square({5})
         """
         if value == None:
             value = random.choice(list(self))
@@ -43,10 +43,10 @@ class Square(set):
     def __str__(self):
         """
         >>> s=Square()
-        >>> print s
+        >>> print (s)
         [9]
         >>> s.fix(5)
-        >>> print s
+        >>> print (s)
          5 
         """
         if self.isdone():
